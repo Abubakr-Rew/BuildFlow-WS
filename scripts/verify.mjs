@@ -83,6 +83,97 @@ function findContrastIssues() {
   return { checked, lowest: Number(lowest.toFixed(2)), issues };
 }
 
+/**
+ * Contrast of text over the hero photo, measured on real pixels: the hero is captured
+ * with all text made transparent, then each line of text is compared with the lightest
+ * 5% of the background pixels behind it.
+ */
+async function photoTextContrast(page) {
+  const lines = await page.evaluate(() => {
+    const root = document.querySelector('[data-photo]');
+    const origin = root.getBoundingClientRect();
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const result = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const el = node.parentElement;
+      if (!node.textContent.trim() || el.closest('.sr-only')) continue;
+      // The phone and its tilted cards have solid backgrounds (covered by the DOM check);
+      // a rotated card's box would also take in photo pixels outside the card.
+      if (el.closest('[data-mockup] [aria-hidden="true"]')) continue;
+      const style = getComputedStyle(el);
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const rect of range.getClientRects()) {
+        if (rect.width < 2 || rect.height < 2) continue;
+        result.push({
+          text: node.textContent.trim().slice(0, 30),
+          color: style.color,
+          size: parseFloat(style.fontSize),
+          weight: parseInt(style.fontWeight, 10),
+          x: rect.left - origin.left,
+          y: rect.top - origin.top,
+          width: rect.width,
+          height: rect.height,
+        });
+      }
+    }
+    return result;
+  });
+
+  const hideText = await page.addStyleTag({
+    // transition: none, or buttons would be captured mid-fade with their text still showing.
+    content: '[data-photo] *, [data-photo] *::before, [data-photo] *::after { color: transparent !important; text-shadow: none !important; transition: none !important; } header { position: static !important; }',
+  });
+  const png = await page.locator('[data-photo]').screenshot();
+  await hideText.evaluate((node) => node.remove());
+
+  return page.evaluate(
+    async ({ base64, lines }) => {
+      const image = new Image();
+      image.src = `data:image/png;base64,${base64}`;
+      await image.decode();
+      const canvas = Object.assign(document.createElement('canvas'), { width: image.width, height: image.height });
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(image, 0, 0);
+      const probe = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext('2d', {
+        willReadFrequently: true,
+      });
+      const rgb = (color) => {
+        probe.clearRect(0, 0, 1, 1);
+        probe.fillStyle = color;
+        probe.fillRect(0, 0, 1, 1);
+        return probe.getImageData(0, 0, 1, 1).data;
+      };
+      const channel = (v) => ((v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+      const luminance = (r, g, b) => 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+
+      const issues = [];
+      let lowest = Infinity;
+      for (const line of lines) {
+        const x = Math.max(0, Math.floor(line.x));
+        const y = Math.max(0, Math.floor(line.y));
+        const width = Math.min(canvas.width - x, Math.ceil(line.width));
+        const height = Math.min(canvas.height - y, Math.ceil(line.height));
+        if (width < 1 || height < 1) continue;
+        const data = ctx.getImageData(x, y, width, height).data;
+        const values = [];
+        for (let i = 0; i < data.length; i += 4) values.push(luminance(data[i], data[i + 1], data[i + 2]));
+        values.sort((a, b) => a - b);
+        const [fr, fg, fb] = rgb(line.color);
+        const text = luminance(fr, fg, fb);
+        // Light text: the lightest background pixels are the worst case; dark text: the darkest.
+        const background = text > 0.5 ? values[Math.floor(values.length * 0.95)] : values[Math.floor(values.length * 0.05)];
+        const ratio = (Math.max(text, background) + 0.05) / (Math.min(text, background) + 0.05);
+        const needed = line.size >= 24 || (line.size >= 18.66 && line.weight >= 700) ? 3 : 4.5;
+        lowest = Math.min(lowest, ratio);
+        if (ratio < needed) issues.push(`"${line.text}" ${ratio.toFixed(2)}:1 (needs ${needed}:1)`);
+      }
+      return { checked: lines.length, lowest: Number(lowest.toFixed(2)), issues };
+    },
+    { base64: png.toString('base64'), lines },
+  );
+}
+
 /** Opens the page and records console errors, page errors and failed requests. */
 async function openPage(contextOptions) {
   const context = await browser.newContext(contextOptions);
@@ -177,6 +268,28 @@ for (const width of WIDTHS) {
       `${tag}: text contrast meets WCAG AA (${contrast.checked} text elements, lowest ${contrast.lowest}:1)` +
         (contrast.issues.length ? `; ${contrast.issues.join('; ')}` : ''),
     );
+    const photo = await photoTextContrast(page);
+    check(
+      photo.issues.length === 0,
+      `${tag}: text over the hero photo meets WCAG AA on real pixels (${photo.checked} lines, lowest ${photo.lowest}:1)` +
+        (photo.issues.length ? `; ${photo.issues.join('; ')}` : ''),
+    );
+
+    // The hero photo: right crop for the width, a modern format, loaded eagerly with high priority.
+    const heroImage = await page.evaluate(() => {
+      const img = document.querySelector('[data-photo] img');
+      return {
+        src: img.currentSrc,
+        loaded: img.complete && img.naturalWidth > 0,
+        eager: img.loading === 'eager' && img.getAttribute('fetchpriority') === 'high',
+        sized: img.hasAttribute('width') && img.hasAttribute('height'),
+      };
+    });
+    const crop = width < 640 ? 'tall' : 'wide';
+    check(
+      heroImage.loaded && heroImage.eager && heroImage.sized && heroImage.src.includes(crop) && /\.(avif|webp)/.test(heroImage.src),
+      `${tag}: hero photo uses the ${crop} crop as AVIF/WebP, eager, high priority, with width/height (${heroImage.src.split('/').pop()})`,
+    );
     const expectedBackground = scheme === 'dark' ? 'rgb(17, 18, 20)' : 'rgb(244, 244, 241)';
     check(layout.background === expectedBackground, `${tag}: ${scheme} theme applied (${layout.background})`);
     check(errors.length === 0, `${tag}: no console errors or failed requests` + (errors.length ? `; ${errors.join('; ')}` : ''));
@@ -190,6 +303,20 @@ for (const width of WIDTHS) {
 
     await context.close();
   }
+}
+
+// 1a. On a 1440x900 screen the hero fits and the next section peeks out below it.
+{
+  const { context, page } = await openPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const fit = await page.evaluate(() => ({
+    heroBottom: Math.round(document.querySelector('#top').getBoundingClientRect().bottom),
+    labelTop: Math.round(document.querySelector('#problem p').getBoundingClientRect().top),
+  }));
+  check(
+    fit.heroBottom <= 860 && fit.labelTop < 900,
+    `1440x900: hero ends at ${fit.heroBottom}px and the next section's label starts at ${fit.labelTop}px (visible)`,
+  );
+  await context.close();
 }
 
 // 1b. Narrow Android phones, a phone in landscape, and text enlarged to 200%: no horizontal scroll.
@@ -348,11 +475,15 @@ for (const width of [375, 1440]) {
   await page.waitForTimeout(600);
   const stillHidden = await page.$$eval('[data-reveal]', (els) => els.filter((el) => getComputedStyle(el).opacity !== '1').length);
   check(hiddenBefore > 0 && stillHidden === 0, `reveal: ${hiddenBefore} blocks start hidden below the fold, ${stillHidden} hidden after scrolling`);
+  const floating = await page.$$eval('.animate-float', (els) => els.map((el) => getComputedStyle(el).animationName));
+  check(floating.length > 0 && floating.every((name) => name === 'float'), `floating sample cards drift with motion allowed (${floating.join(', ')})`);
   await context.close();
 
   const reduced = await openPage({ viewport: { width: 375, height: 800 }, reducedMotion: 'reduce' });
   const hiddenReduced = await reduced.page.$$eval('[data-reveal]', (els) => els.filter((el) => getComputedStyle(el).opacity !== '1').length);
   check(hiddenReduced === 0, `reduced motion: all blocks visible without scrolling (${hiddenReduced} hidden)`);
+  const still = await reduced.page.$$eval('.animate-float', (els) => els.map((el) => getComputedStyle(el).animationName));
+  check(still.every((name) => name === 'none'), `reduced motion: floating cards stand still (${still.join(', ')})`);
   await reduced.context.close();
 }
 
