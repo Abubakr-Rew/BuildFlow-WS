@@ -1,5 +1,7 @@
 ---
 // BuildFlow mark: a hard hat on a safety-orange tile. Decorative; pair it with visible text.
+import { markShapes } from '../lib/brand';
+
 interface Props {
   class?: string;
 }
@@ -7,13 +9,10 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<svg class={className} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-  <rect width="32" height="32" rx="7" fill="var(--bf-accent)"></rect>
-  <path d="M7.5 20.5a8.5 8.5 0 0 1 17 0z" fill="var(--bf-on-accent)"></path>
-  <rect x="5" y="21" width="22" height="3.5" rx="1.75" fill="var(--bf-on-accent)"></rect>
-  <path
-    d="M14.25 12.6v5.4M17.75 12.6v5.4"
-    stroke="var(--bf-accent)"
-    stroke-width="1.5"
-    stroke-linecap="round"></path>
-</svg>
+<svg
+  class={className}
+  viewBox="0 0 32 32"
+  aria-hidden="true"
+  focusable="false"
+  set:html={markShapes('var(--bf-accent)', 'var(--bf-on-accent)')}
+/>
