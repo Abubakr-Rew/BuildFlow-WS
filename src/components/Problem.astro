@@ -21,12 +21,12 @@ const icons = [MessagesSquare, ImageOff, ClockAlert, CircleQuestionMark];
           const Icon = icons[index];
           return (
             <li
-              class="flex items-center gap-4 rounded-xl border border-line bg-surface p-5 sm:flex-col sm:items-start sm:gap-5 sm:p-6"
+              class="flex items-center gap-4 rounded-xl border border-l-[3px] border-line border-l-accent bg-surface p-5 sm:flex-col sm:items-start sm:gap-5 sm:p-6"
               data-reveal
               style={`--reveal-delay: ${index * 80}ms`}
             >
               {Icon && (
-                <span class="grid size-12 shrink-0 place-items-center rounded-lg bg-sunken text-accent-ink">
+                <span class="grid size-12 shrink-0 place-items-center rounded-lg bg-accent/12 text-accent-ink">
                   <Icon class="size-6" />
                 </span>
               )}

@@ -4,7 +4,8 @@ import { texts } from '../texts';
 
 interface Props extends HTMLAttributes<'a'> {
   href: string;
-  variant?: 'primary' | 'secondary' | 'secondary-inverse';
+  /** "dark" and "outline-dark" are for the orange band. */
+  variant?: 'primary' | 'secondary' | 'secondary-inverse' | 'dark' | 'outline-dark';
   /** Opens in a new tab and tells screen reader users about it. */
   external?: boolean;
 }
@@ -17,6 +18,8 @@ const variants = {
   secondary: 'border-2 border-fg text-fg hover:bg-fg hover:text-bg active:translate-y-0.5',
   'secondary-inverse':
     'border-2 border-on-inverse text-on-inverse hover:bg-on-inverse hover:text-inverse active:translate-y-0.5',
+  dark: 'bg-inverse text-on-inverse shadow-[0_3px_0_0_rgb(0_0_0/0.35)] hover:bg-inverse/85 active:translate-y-0.5 active:shadow-none',
+  'outline-dark': 'border-2 border-on-accent text-on-accent hover:bg-on-accent hover:text-accent active:translate-y-0.5',
 };
 ---
 

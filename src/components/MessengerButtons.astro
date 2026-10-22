@@ -8,22 +8,27 @@ interface Props {
   /** Visible action, e.g. "Хочу пилот"; the messenger name is added after it. */
   label: string;
   links: { telegram: string; whatsapp: string };
-  /** Use on the dark graphite blocks. */
-  inverse?: boolean;
+  /** Background the buttons sit on: page, dark graphite block or the orange band. */
+  tone?: 'default' | 'inverse' | 'accent';
   class?: string;
 }
 
-const { label, links, inverse = false, class: className } = Astro.props;
+const { label, links, tone = 'default', class: className } = Astro.props;
+const variants = {
+  default: { telegram: 'primary', whatsapp: 'secondary' },
+  inverse: { telegram: 'primary', whatsapp: 'secondary-inverse' },
+  accent: { telegram: 'dark', whatsapp: 'outline-dark' },
+} as const;
 ---
 
 <!-- Equal-width buttons: stacked, or side by side once the container fits both labels. -->
 <div class:list={['@container', className]}>
   <div class="grid gap-3 @[34rem]:grid-cols-2">
-    <Button href={links.telegram} external>
+    <Button href={links.telegram} external variant={variants[tone].telegram}>
       <Send class="size-5 shrink-0" />
       <span>{label} <span class="font-semibold">{texts.common.inTelegram}</span></span>
     </Button>
-    <Button href={links.whatsapp} external variant={inverse ? 'secondary-inverse' : 'secondary'}>
+    <Button href={links.whatsapp} external variant={variants[tone].whatsapp}>
       <MessageCircle class="size-5 shrink-0" />
       <span>{label} <span class="font-semibold">{texts.common.inWhatsapp}</span></span>
     </Button>

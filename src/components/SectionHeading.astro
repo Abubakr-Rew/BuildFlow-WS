@@ -6,16 +6,20 @@ interface Props {
   label: string;
   title: string;
   lead?: string;
-  /** "inverse" for headings on the dark graphite blocks. */
-  tone?: 'default' | 'inverse';
+  /** Background the heading sits on: page, dark graphite block or the orange band. */
+  tone?: 'default' | 'inverse' | 'accent';
 }
 
 const { id, number, label, title, lead, tone = 'default' } = Astro.props;
-const inverse = tone === 'inverse';
+const colors = {
+  default: { label: 'text-accent-ink', lead: 'text-muted' },
+  inverse: { label: 'text-accent', lead: 'text-on-inverse-muted' },
+  accent: { label: 'text-on-accent', lead: 'text-on-accent' },
+}[tone];
 ---
 
 <div class="max-w-3xl" data-reveal>
-  <p class:list={['label-caps flex items-center gap-3', inverse ? 'text-accent' : 'text-accent-ink']}>
+  <p class:list={['label-caps flex items-center gap-3', colors.label]}>
     <span class="tabular-nums" aria-hidden="true">{number}</span>
     <span class="h-0.5 w-8 bg-current" aria-hidden="true"></span>
     <span>{label}</span>
@@ -23,11 +27,5 @@ const inverse = tone === 'inverse';
   <h2 id={id} class="mt-4 text-3xl leading-tight font-extrabold sm:text-4xl lg:text-5xl">
     {title}
   </h2>
-  {
-    lead && (
-      <p class:list={['mt-4 text-lg sm:text-xl', inverse ? 'text-on-inverse-muted' : 'text-muted']}>
-        {lead}
-      </p>
-    )
-  }
+  {lead && <p class:list={['mt-4 text-lg sm:text-xl', colors.lead]}>{lead}</p>}
 </div>
