@@ -1,0 +1,54 @@
+---
+import CalendarDays from '@lucide/astro/icons/calendar-days';
+import Building from '@lucide/astro/icons/building';
+import Tag from '@lucide/astro/icons/tag';
+import DoorOpen from '@lucide/astro/icons/door-open';
+import SectionHeading from './SectionHeading.astro';
+import MessengerButtons from './MessengerButtons.astro';
+import { texts } from '../texts';
+import { contactLinks } from '../lib/links';
+
+const { pilot } = texts;
+const icons = [CalendarDays, Building, Tag, DoorOpen];
+---
+
+<section id="pilot" aria-labelledby="pilot-title" class="py-16 md:py-24">
+  <div class="container-page">
+    <div
+      class="overflow-hidden rounded-2xl bg-inverse text-on-inverse ring-1 ring-inverse-line [--bf-focus:var(--bf-accent)]"
+    >
+      <div class="hazard-stripes h-3" aria-hidden="true"></div>
+      <div class="grid grid-cols-1 gap-10 p-6 sm:p-10 lg:grid-cols-2 lg:gap-16 lg:p-14">
+        <div>
+          <SectionHeading
+            id="pilot-title"
+            number="04"
+            label={pilot.label}
+            title={pilot.title}
+            tone="inverse"
+          />
+          <p class="mt-6 text-lg text-on-inverse-muted sm:text-xl" data-reveal>{pilot.text}</p>
+        </div>
+
+        <div class="lg:pt-10">
+          <!-- Conditions as a spec sheet: one bordered list with dividers. -->
+          <ul class="divide-y divide-inverse-line rounded-xl border border-inverse-line" data-reveal>
+            {
+              pilot.conditions.map((condition, index) => {
+                const Icon = icons[index];
+                return (
+                  <li class="flex items-center gap-4 px-5 py-4">
+                    {Icon && <Icon class="size-6 shrink-0 text-accent" />}
+                    <span class="text-lg leading-snug font-semibold">{condition}</span>
+                  </li>
+                );
+              })
+            }
+          </ul>
+          <MessengerButtons class="mt-8" label={pilot.cta} links={contactLinks.pilot} inverse />
+          <p class="mt-4 text-base text-on-inverse-muted">{pilot.hint}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

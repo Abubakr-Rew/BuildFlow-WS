@@ -1,0 +1,31 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import MessengerButtons from './MessengerButtons.astro';
+import { texts } from '../texts';
+import { contactLinks } from '../lib/links';
+
+const { interview } = texts;
+---
+
+<section id="interview" aria-labelledby="interview-title" class="pb-16 md:pb-24">
+  <div class="container-page">
+    <!-- A card from 640px up; on phones the buttons get the full width instead. -->
+    <div
+      class="grid grid-cols-1 gap-8 sm:rounded-2xl sm:border sm:border-line sm:bg-surface sm:p-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16 lg:p-14"
+    >
+      <div>
+        <SectionHeading
+          id="interview-title"
+          number="05"
+          label={interview.label}
+          title={interview.title}
+        />
+        <p class="mt-6 max-w-2xl text-lg text-muted sm:text-xl" data-reveal>{interview.text}</p>
+      </div>
+      <div data-reveal>
+        <MessengerButtons label={interview.cta} links={contactLinks.interview} />
+        <p class="mt-4 text-base text-muted">{interview.hint}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,45 @@
+---
+import MessagesSquare from '@lucide/astro/icons/messages-square';
+import ImageOff from '@lucide/astro/icons/image-off';
+import ClockAlert from '@lucide/astro/icons/clock-alert';
+import CircleQuestionMark from '@lucide/astro/icons/circle-question-mark';
+import Info from '@lucide/astro/icons/info';
+import SectionHeading from './SectionHeading.astro';
+import { texts } from '../texts';
+
+const { problem } = texts;
+const icons = [MessagesSquare, ImageOff, ClockAlert, CircleQuestionMark];
+---
+
+<section id="problem" aria-labelledby="problem-title" class="py-16 md:py-24">
+  <div class="container-page">
+    <SectionHeading id="problem-title" number="01" label={problem.label} title={problem.title} />
+
+    <ul class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        problem.items.map((item, index) => {
+          const Icon = icons[index];
+          return (
+            <li
+              class="flex items-center gap-4 rounded-xl border border-line bg-surface p-5 sm:flex-col sm:items-start sm:gap-5 sm:p-6"
+              data-reveal
+              style={`--reveal-delay: ${index * 80}ms`}
+            >
+              {Icon && (
+                <span class="grid size-12 shrink-0 place-items-center rounded-lg bg-sunken text-accent-ink">
+                  <Icon class="size-6" />
+                </span>
+              )}
+              <p class="text-lg leading-snug font-semibold">{item}</p>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p class="mt-6 flex items-start gap-2 text-base text-muted" data-reveal>
+      <Info class="mt-0.5 size-5 shrink-0" />
+      {problem.note}
+    </p>
+  </div>
+</section>

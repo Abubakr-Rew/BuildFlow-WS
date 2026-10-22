@@ -1,0 +1,82 @@
+---
+import ChevronLeft from '@lucide/astro/icons/chevron-left';
+import Camera from '@lucide/astro/icons/camera';
+import Plus from '@lucide/astro/icons/plus';
+import Signal from '@lucide/astro/icons/signal';
+import BatteryMedium from '@lucide/astro/icons/battery-medium';
+import SitePhoto from './SitePhoto.astro';
+import { texts } from '../texts';
+
+const { mockup } = texts;
+const scenes = ['frame', 'rebar'] as const;
+---
+
+<figure class="mx-auto w-full max-w-[19rem]">
+  <div
+    class="relative rounded-[2.75rem] bg-inverse p-2.5 shadow-[0_24px_48px_-12px_rgb(0_0_0/0.35)] ring-1 ring-line-strong"
+    aria-hidden="true"
+  >
+    <div class="relative h-[36rem] overflow-hidden rounded-[2.2rem] bg-bg">
+      <div class="flex h-9 items-center justify-between px-6 pt-1 text-xs font-semibold">
+        <span class="tabular-nums">{mockup.clock}</span>
+        <span class="absolute top-2.5 left-1/2 size-3.5 -translate-x-1/2 rounded-full bg-inverse"></span>
+        <span class="flex items-center gap-1">
+          <Signal class="size-3.5" />
+          <BatteryMedium class="size-4" />
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2 border-b border-line bg-surface px-3 py-2.5">
+        <ChevronLeft class="size-5 shrink-0 text-muted" />
+        <div class="min-w-0">
+          <p class="truncate font-display text-sm leading-tight font-extrabold">{mockup.screenTitle}</p>
+          <p class="text-xs leading-tight text-muted">{mockup.screenSubtitle}</p>
+        </div>
+      </div>
+
+      <div class="space-y-3 px-3 pt-3">
+        <p class="text-center">
+          <span class="inline-block rounded-full bg-sunken px-3 py-0.5 text-xs font-semibold text-muted">
+            {mockup.today}
+          </span>
+        </p>
+        {
+          mockup.reports.map((report, index) => (
+            <article class="rounded-2xl border border-line bg-surface p-3">
+              <div class="flex items-center gap-2">
+                <span class="grid size-7 place-items-center rounded-full bg-accent font-display text-xs font-extrabold text-on-accent">
+                  {report.author.charAt(0)}
+                </span>
+                <span class="text-[0.8125rem] font-bold">{report.author}</span>
+                <span class="ml-auto text-xs text-muted tabular-nums">{report.time}</span>
+              </div>
+              <SitePhoto scene={scenes[index % scenes.length]} class="mt-2.5 block w-full rounded-xl" />
+              <p class="mt-2 text-[0.8125rem] leading-snug">{report.text}</p>
+              <p class="mt-1.5 flex items-center gap-1 text-xs text-muted">
+                <Camera class="size-3.5" />
+                {report.photos}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-bg from-60% to-transparent px-3 pt-10 pb-4">
+        <p class="flex h-12 items-center justify-center gap-2 rounded-xl bg-accent font-display text-sm font-extrabold text-on-accent">
+          <Plus class="size-5" stroke-width={3} />
+          {mockup.newReport}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <figcaption class="mt-5 text-center">
+    <span class="label-caps flex items-center justify-center gap-3 text-accent-ink">
+      <span class="h-0.5 w-6 bg-current" aria-hidden="true"></span>
+      {mockup.caption}
+      <span class="h-0.5 w-6 bg-current" aria-hidden="true"></span>
+    </span>
+    <span class="mt-1 block text-sm text-muted">{mockup.captionNote}</span>
+    <span class="sr-only">{mockup.description}</span>
+  </figcaption>
+</figure>

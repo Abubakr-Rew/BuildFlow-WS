@@ -1,0 +1,37 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { texts } from '../texts';
+import { siteConfig } from '../site.config';
+import { withBase } from '../lib/url';
+
+const { about } = texts;
+const { name, photo } = siteConfig.author;
+---
+
+<section id="about" aria-labelledby="about-title" class="py-16 md:py-24">
+  <div class="container-page grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
+    <SectionHeading id="about-title" number="07" label={about.label} title={about.title} />
+
+    <div class="lg:pt-10" data-reveal>
+      {
+        (name || photo) && (
+          <figure class="mb-6 flex items-center gap-4">
+            {photo && (
+              <img
+                src={withBase(photo)}
+                alt={name}
+                width="80"
+                height="80"
+                loading="lazy"
+                decoding="async"
+                class="size-20 rounded-full border-2 border-line object-cover"
+              />
+            )}
+            {name && <figcaption class="font-display text-xl font-extrabold">{name}</figcaption>}
+          </figure>
+        )
+      }
+      <p class="text-xl leading-relaxed sm:text-2xl sm:leading-relaxed">{about.text}</p>
+    </div>
+  </div>
+</section>

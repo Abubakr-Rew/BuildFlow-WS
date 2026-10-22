@@ -15,7 +15,7 @@ const contacts = [
 
 <footer class="bg-inverse text-on-inverse">
   <div class="hazard-stripes h-2" aria-hidden="true"></div>
-  <div class="container-page grid gap-8 py-12 md:grid-cols-2 md:items-end">
+  <div class="container-page grid grid-cols-1 gap-8 py-12 md:grid-cols-2 md:items-end">
     <div>
       <a
         href="#top"
@@ -31,7 +31,7 @@ const contacts = [
     </div>
 
     <nav aria-label={texts.footer.contactsLabel}>
-      <ul class="flex flex-wrap gap-x-2 gap-y-2 md:justify-end">
+      <ul class="-mx-3 flex flex-wrap gap-2 md:justify-end">
         {
           contacts.map((contact) => (
             <li>
@@ -51,7 +51,7 @@ const contacts = [
   </div>
   <div class="border-t border-inverse-line">
     <p class="container-page py-6 text-base text-on-inverse-muted">
-      © {year} BuildFlow · {texts.footer.city}
+      © {year} BuildFlow
     </p>
   </div>
 </footer>

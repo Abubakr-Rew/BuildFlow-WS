@@ -1,0 +1,58 @@
+---
+import Smartphone from '@lucide/astro/icons/smartphone';
+import Camera from '@lucide/astro/icons/camera';
+import GalleryVerticalEnd from '@lucide/astro/icons/gallery-vertical-end';
+import SectionHeading from './SectionHeading.astro';
+import { texts } from '../texts';
+
+const { how } = texts;
+const icons = [Smartphone, Camera, GalleryVerticalEnd];
+---
+
+<section id="how" aria-labelledby="how-title" class="border-y border-line bg-sunken py-16 md:py-24">
+  <div class="container-page">
+    <SectionHeading id="how-title" number="02" label={how.label} title={how.title} lead={how.lead} />
+
+    <!-- Drawing-style dimension line over the foreman's two steps (decorative; the lead says it in words). -->
+    <div class="mt-12 hidden md:grid md:grid-cols-3 md:gap-8" aria-hidden="true">
+      <div class="col-span-2 flex items-center text-accent-ink">
+        <span class="h-4 w-0.5 bg-current"></span>
+        <span class="h-0.5 flex-1 bg-current"></span>
+        <span class="label-caps px-3 whitespace-nowrap">{how.duration}</span>
+        <span class="h-0.5 flex-1 bg-current"></span>
+        <span class="h-4 w-0.5 bg-current"></span>
+      </div>
+    </div>
+
+    <ol class="mt-10 grid grid-cols-1 gap-4 md:mt-4 md:grid-cols-3 md:gap-8">
+      {
+        how.steps.map((step, index) => {
+          const Icon = icons[index];
+          return (
+            <li
+              class="flex flex-col rounded-xl border border-line bg-surface p-6"
+              data-reveal
+              style={`--reveal-delay: ${index * 100}ms`}
+            >
+              <div class="flex items-center justify-between">
+                <span
+                  class="font-display text-5xl leading-none font-extrabold text-accent tabular-nums"
+                  aria-hidden="true"
+                >
+                  {index + 1}
+                </span>
+                {Icon && <Icon class="size-8 text-muted" stroke-width={1.75} />}
+              </div>
+              <p class="mt-6">
+                <span class="inline-block rounded-md bg-sunken px-2.5 py-0.5 text-sm font-semibold text-muted">
+                  {step.role}
+                </span>
+              </p>
+              <p class="mt-3 text-lg leading-snug font-semibold">{step.text}</p>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
+</section>

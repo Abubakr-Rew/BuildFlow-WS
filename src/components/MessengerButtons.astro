@@ -1,0 +1,31 @@
+---
+import Send from '@lucide/astro/icons/send';
+import MessageCircle from '@lucide/astro/icons/message-circle';
+import Button from './Button.astro';
+import { texts } from '../texts';
+
+interface Props {
+  /** Visible action, e.g. "Хочу пилот"; the messenger name is added after it. */
+  label: string;
+  links: { telegram: string; whatsapp: string };
+  /** Use on the dark graphite blocks. */
+  inverse?: boolean;
+  class?: string;
+}
+
+const { label, links, inverse = false, class: className } = Astro.props;
+---
+
+<!-- Equal-width buttons: stacked, or side by side once the container fits both labels. -->
+<div class:list={['@container', className]}>
+  <div class="grid gap-3 @[34rem]:grid-cols-2">
+    <Button href={links.telegram} external>
+      <Send class="size-5 shrink-0" />
+      <span>{label} <span class="font-semibold">{texts.common.inTelegram}</span></span>
+    </Button>
+    <Button href={links.whatsapp} external variant={inverse ? 'secondary-inverse' : 'secondary'}>
+      <MessageCircle class="size-5 shrink-0" />
+      <span>{label} <span class="font-semibold">{texts.common.inWhatsapp}</span></span>
+    </Button>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+---
+interface Props {
+  /** id of the <h2>, referenced by the section's aria-labelledby. */
+  id: string;
+  number: string;
+  label: string;
+  title: string;
+  lead?: string;
+  /** "inverse" for headings on the dark graphite blocks. */
+  tone?: 'default' | 'inverse';
+}
+
+const { id, number, label, title, lead, tone = 'default' } = Astro.props;
+const inverse = tone === 'inverse';
+---
+
+<div class="max-w-3xl" data-reveal>
+  <p class:list={['label-caps flex items-center gap-3', inverse ? 'text-accent' : 'text-accent-ink']}>
+    <span class="tabular-nums" aria-hidden="true">{number}</span>
+    <span class="h-0.5 w-8 bg-current" aria-hidden="true"></span>
+    <span>{label}</span>
+  </p>
+  <h2 id={id} class="mt-4 text-3xl leading-tight font-extrabold sm:text-4xl lg:text-5xl">
+    {title}
+  </h2>
+  {
+    lead && (
+      <p class:list={['mt-4 text-lg sm:text-xl', inverse ? 'text-on-inverse-muted' : 'text-muted']}>
+        {lead}
+      </p>
+    )
+  }
+</div>

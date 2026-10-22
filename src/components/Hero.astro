@@ -1,0 +1,65 @@
+---
+import ArrowDown from '@lucide/astro/icons/arrow-down';
+import MapPin from '@lucide/astro/icons/map-pin';
+import Smartphone from '@lucide/astro/icons/smartphone';
+import Button from './Button.astro';
+import PhoneMockup from './PhoneMockup.astro';
+import { texts } from '../texts';
+
+const { hero } = texts;
+const factIcons = [MapPin, Smartphone];
+---
+
+<section id="top" aria-labelledby="hero-title" class="relative overflow-hidden border-b border-line">
+  <div
+    class="bg-blueprint absolute inset-0 [mask-image:linear-gradient(to_bottom,black_40%,transparent)]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div
+    class="container-page relative grid grid-cols-1 items-center gap-12 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-16 lg:py-24"
+  >
+    <div>
+      <p
+        class="inline-flex items-start gap-2.5 rounded-lg border border-line bg-surface px-3 py-2 text-sm leading-snug font-semibold"
+      >
+        <span class="mt-1.5 size-2 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+        {hero.badge}
+      </p>
+
+      <h1
+        id="hero-title"
+        class="mt-6 text-[2.5rem] leading-[1.05] font-extrabold sm:text-6xl lg:text-[4rem]"
+      >
+        {hero.titleStart} <span class="text-accent-ink">{hero.titleAccent}</span>
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg text-muted sm:text-xl">{hero.lead}</p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <Button href="#contact">{hero.primaryCta}</Button>
+        <Button href="#how" variant="secondary">
+          {hero.secondaryCta}
+          <ArrowDown class="size-5" />
+        </Button>
+      </div>
+
+      <ul class="mt-8 flex flex-col gap-2 text-base text-muted sm:flex-row sm:flex-wrap sm:gap-x-6">
+        {
+          hero.facts.map((fact, index) => {
+            const Icon = factIcons[index];
+            return (
+              <li class="flex items-center gap-2">
+                {Icon && <Icon class="size-5 shrink-0 text-accent-ink" />}
+                {fact}
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+
+    <PhoneMockup />
+  </div>
+</section>

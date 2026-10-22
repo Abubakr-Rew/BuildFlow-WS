@@ -15,6 +15,8 @@ export const texts = typographAll({
     skipLink: 'Перейти к содержанию',
     homeLink: 'BuildFlow, в начало страницы',
     newTab: '(откроется в новой вкладке)',
+    inTelegram: 'в Telegram',
+    inWhatsapp: 'в WhatsApp',
   },
   nav: {
     label: 'Разделы страницы',
@@ -62,6 +64,7 @@ export const texts = typographAll({
     label: 'Решение',
     title: 'Как это работает',
     lead: 'Отчёт занимает меньше 2 минут.',
+    duration: 'меньше 2 минут',
     steps: [
       { role: 'Прораб', text: 'Прораб открывает приложение и выбирает объект.' },
       { role: 'Прораб', text: 'Делает фото и пишет пару строк.' },

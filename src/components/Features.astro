@@ -1,0 +1,49 @@
+---
+import Check from '@lucide/astro/icons/check';
+import Minus from '@lucide/astro/icons/minus';
+import SectionHeading from './SectionHeading.astro';
+import { texts } from '../texts';
+
+const { features } = texts;
+---
+
+<section id="features" aria-labelledby="features-title" class="py-16 md:py-24">
+  <div class="container-page">
+    <SectionHeading id="features-title" number="03" label={features.label} title={features.title} />
+
+    <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-8">
+      <ul class="grid grid-cols-1 gap-3">
+        {
+          features.items.map((item, index) => (
+            <li
+              class="flex items-start gap-4 rounded-xl border border-line bg-surface p-5"
+              data-reveal
+              style={`--reveal-delay: ${index * 60}ms`}
+            >
+              <span class="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-on-accent">
+                <Check class="size-5" stroke-width={3} />
+              </span>
+              <span class="pt-0.5 text-lg leading-snug font-semibold">{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- Dashed outline: drawn on the plan, not built yet. -->
+      <div class="self-start rounded-xl border-2 border-dashed border-line-strong p-6" data-reveal>
+        <h3 class="text-xl font-extrabold">{features.notYetTitle}</h3>
+        <ul class="mt-4 grid gap-3">
+          {
+            features.notYet.map((item) => (
+              <li class="flex items-center gap-3 text-lg text-muted">
+                <Minus class="size-5 shrink-0" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-6 border-t border-line pt-5 text-lg leading-snug font-semibold">{features.note}</p>
+      </div>
+    </div>
+  </div>
+</section>
