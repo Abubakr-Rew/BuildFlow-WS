@@ -6,7 +6,8 @@ Single-page site that recruits small Bishkek construction companies for a free 2
 
 - Site copy is Russian only: short sentences, no jargon or startup buzzwords.
 - Use only facts from BRIEF.md. The product is in development, so there are no customers, reviews, statistics, case studies, logos, "trusted by", ratings or app-store/download buttons. Never invent them.
-- The phone mockup's sample data stays obviously fake and labelled "Пример интерфейса".
+- The phone mockup's sample data, including the floating cards around it, stays obviously fake and labelled "Пример интерфейса".
+- Photos must be your own or properly licensed (for example Pexels or Unsplash), with no identifiable people and no brands. Record each one in `CREDITS.md`.
 - Never mention or compare with competitors.
 - No backend, forms, cookies, trackers or analytics. Contact is Telegram, WhatsApp and mailto links built from `src/site.config.ts`.
 - Make design decisions (style, color, type, layout, UX checks) with the `ui-ux-pro-max` skill.
@@ -19,6 +20,8 @@ Astro 7 (static output), Tailwind CSS 4 via `@tailwindcss/vite`, strict TypeScri
 - `npm run verify` runs `scripts/verify.mjs` (playwright-core + installed Chrome) against a running preview. It covers:
   - screenshots in `reports/screenshots/`;
   - overflow, tap targets >= 44px and WCAG contrast in both themes;
+  - contrast of text over the hero photo, measured on real pixels;
+  - the hero fitting a 1440x900 screen;
   - anchors and exact contact URLs;
   - keyboard and reduced motion.
 
@@ -38,6 +41,11 @@ Astro 7 (static output), Tailwind CSS 4 via `@tailwindcss/vite`, strict TypeScri
   - Spacing is px-based (`--spacing: 4px`, 8-pt grid).
   - The `[data-reveal]` scroll animation lives here too.
 - `src/components/` has one component per section. `MessengerButtons` renders every Telegram/WhatsApp button pair.
+- Hero:
+  - `Hero.astro` builds an art-directed `<picture>` with `getImage()`: the tall crop for phones, the wide one from 640px.
+  - The photos are `src/assets/hero/*`, prepared by `scripts/prepare-hero-photo.mjs`.
+  - The hero uses the theme-independent `night` tokens, so it is dark in both themes. The phone screen inside it follows the page theme.
+- Page rhythm: light/dark sections alternate `bg` and `sunken`, and the pilot offer is the single orange band (`tone="accent"`).
 - `src/lib/images.ts` and `src/pages/*.png.ts` render the OG image and favicons at build time (satori + resvg). satori needs the static `.woff` files from `@fontsource/*`, with one family name per subset.
 - Fonts are Golos Text (body) and Manrope (headings) from `@fontsource-variable`, loaded through Astro's fonts API with the `local` provider. The `npm` provider with `remote: false` breaks the build in Astro 7.4.
 
