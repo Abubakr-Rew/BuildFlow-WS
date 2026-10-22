@@ -1,0 +1,48 @@
+---
+import Logo from './Logo.astro';
+import { texts } from '../texts';
+
+const links = [
+  { href: '#how', label: texts.nav.how },
+  { href: '#features', label: texts.nav.features },
+  { href: '#pilot', label: texts.nav.pilot },
+];
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md">
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <a
+      href="#top"
+      class="-ml-1 inline-flex min-h-11 items-center gap-2.5 rounded-md px-1 font-display text-xl font-extrabold tracking-tight"
+      aria-label={texts.common.homeLink}
+    >
+      <Logo class="size-8 shrink-0" />
+      <span>BuildFlow</span>
+    </a>
+
+    <div class="flex items-center gap-2">
+      <nav aria-label={texts.nav.label} class="hidden md:block">
+        <ul class="flex items-center gap-1">
+          {
+            links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="inline-flex min-h-11 items-center rounded-md px-3 text-base font-medium text-muted transition-colors duration-200 hover:text-fg"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <a
+        href="#contact"
+        class="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 font-display text-base font-extrabold text-on-accent transition-colors duration-200 hover:bg-accent-hover"
+      >
+        {texts.nav.contact}
+      </a>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { texts } from '../texts';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'secondary-inverse';
+  /** Opens in a new tab and tells screen reader users about it. */
+  external?: boolean;
+}
+
+const { href, variant = 'primary', external = false, class: className, ...rest } = Astro.props;
+
+const variants = {
+  primary:
+    'bg-accent text-on-accent shadow-[0_3px_0_0_var(--color-accent-edge)] hover:bg-accent-hover active:translate-y-0.5 active:shadow-[0_1px_0_0_var(--color-accent-edge)]',
+  secondary: 'border-2 border-fg text-fg hover:bg-fg hover:text-bg active:translate-y-0.5',
+  'secondary-inverse':
+    'border-2 border-on-inverse text-on-inverse hover:bg-on-inverse hover:text-inverse active:translate-y-0.5',
+};
+---
+
+<a
+  href={href}
+  class:list={[
+    'inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-lg px-6 py-2 text-center font-display text-base font-extrabold transition-[background-color,color,translate,box-shadow] duration-200 select-none',
+    variants[variant],
+    className,
+  ]}
+  {...external ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+  {...rest}
+>
+  <slot />
+  {external && <span class="sr-only">{texts.common.newTab}</span>}
+</a>

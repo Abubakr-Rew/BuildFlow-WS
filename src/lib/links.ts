@@ -36,5 +36,7 @@ export const contactLinks = {
     telegram: telegramUrl(siteConfig.messages.interview),
     whatsapp: whatsappUrl(siteConfig.messages.interview),
   },
+  telegram: telegramUrl(),
+  whatsapp: whatsappUrl(),
   email: emailUrl(siteConfig.siteName),
 };

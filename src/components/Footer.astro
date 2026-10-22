@@ -1,0 +1,57 @@
+---
+import Logo from './Logo.astro';
+import { texts } from '../texts';
+import { contactLinks } from '../lib/links';
+
+// Computed when the site is built.
+const year = new Date().getFullYear();
+
+const contacts = [
+  { href: contactLinks.telegram, label: 'Telegram', external: true },
+  { href: contactLinks.whatsapp, label: 'WhatsApp', external: true },
+  { href: contactLinks.email, label: texts.contact.email, external: false },
+];
+---
+
+<footer class="bg-inverse text-on-inverse">
+  <div class="hazard-stripes h-2" aria-hidden="true"></div>
+  <div class="container-page grid gap-8 py-12 md:grid-cols-2 md:items-end">
+    <div>
+      <a
+        href="#top"
+        class="-ml-1 inline-flex min-h-11 items-center gap-2.5 rounded-md px-1 font-display text-xl font-extrabold tracking-tight"
+        aria-label={texts.common.homeLink}
+      >
+        <Logo class="size-8 shrink-0" />
+        <span>BuildFlow</span>
+      </a>
+      <p class="mt-3 text-on-inverse-muted">
+        {texts.footer.nameNote}<br />{texts.footer.city}
+      </p>
+    </div>
+
+    <nav aria-label={texts.footer.contactsLabel}>
+      <ul class="flex flex-wrap gap-x-2 gap-y-2 md:justify-end">
+        {
+          contacts.map((contact) => (
+            <li>
+              <a
+                href={contact.href}
+                class="inline-flex min-h-11 items-center rounded-md px-3 font-medium underline decoration-on-inverse-muted underline-offset-4 transition-colors duration-200 hover:decoration-accent"
+                {...(contact.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                {contact.label}
+                {contact.external && <span class="sr-only">{texts.common.newTab}</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+  <div class="border-t border-inverse-line">
+    <p class="container-page py-6 text-base text-on-inverse-muted">
+      © {year} BuildFlow · {texts.footer.city}
+    </p>
+  </div>
+</footer>

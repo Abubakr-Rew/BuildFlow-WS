@@ -1,1 +1,206 @@
 @import 'tailwindcss';
+
+/*
+ * Design tokens. Components use only these semantic colors; Tailwind's default
+ * palette is switched off so raw colors cannot creep in.
+ * Contrast (WCAG): fg/bg 17:1, muted/bg 7.6:1, accent-ink/bg 5.3:1,
+ * on-accent/accent 5:1 (light) and 6.7:1 (dark).
+ */
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --font-sans: var(--font-golos);
+  --font-display: var(--font-manrope);
+}
+
+@theme inline {
+  --color-bg: var(--bf-bg);
+  --color-surface: var(--bf-surface);
+  --color-sunken: var(--bf-sunken);
+  --color-fg: var(--bf-fg);
+  --color-muted: var(--bf-muted);
+  --color-line: var(--bf-line);
+  --color-line-strong: var(--bf-line-strong);
+  --color-accent: var(--bf-accent);
+  --color-accent-hover: var(--bf-accent-hover);
+  --color-accent-edge: var(--bf-accent-edge);
+  --color-on-accent: var(--bf-on-accent);
+  --color-accent-ink: var(--bf-accent-ink);
+  --color-inverse: var(--bf-inverse);
+  --color-on-inverse: var(--bf-on-inverse);
+  --color-on-inverse-muted: var(--bf-on-inverse-muted);
+  --color-inverse-line: var(--bf-inverse-line);
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+    --bf-bg: #f4f4f1;
+    --bf-surface: #ffffff;
+    --bf-sunken: #eaeae5;
+    --bf-fg: #17181b;
+    --bf-muted: #4b4e54;
+    --bf-line: #d9d9d3;
+    --bf-line-strong: #a9aaa3;
+    --bf-accent: #ea580c;
+    --bf-accent-hover: #f97316;
+    --bf-accent-edge: #9a3412;
+    --bf-on-accent: #17181b;
+    --bf-accent-ink: #b43c0c;
+    --bf-inverse: #17181b;
+    --bf-on-inverse: #f4f4f1;
+    --bf-on-inverse-muted: #b4b6bb;
+    --bf-inverse-line: #33353a;
+    --bf-grid: rgb(23 24 27 / 0.05);
+    --bf-grid-strong: rgb(23 24 27 / 0.09);
+    --bf-focus: #b43c0c;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bf-bg: #111214;
+      --bf-surface: #1a1b1f;
+      --bf-sunken: #16171a;
+      --bf-fg: #f1f1ee;
+      --bf-muted: #a9acb2;
+      --bf-line: #2b2d32;
+      --bf-line-strong: #4a4d54;
+      --bf-accent: #f97316;
+      --bf-accent-hover: #fb8a3c;
+      --bf-accent-edge: #9a3412;
+      --bf-on-accent: #111214;
+      --bf-accent-ink: #fb923c;
+      --bf-inverse: #1d1e22;
+      --bf-on-inverse: #f1f1ee;
+      --bf-on-inverse-muted: #b4b6bb;
+      --bf-inverse-line: #34363c;
+      --bf-grid: rgb(241 241 238 / 0.035);
+      --bf-grid-strong: rgb(241 241 238 / 0.07);
+      --bf-focus: #fb923c;
+    }
+  }
+
+  html {
+    /* Keeps anchored sections and focused elements clear of the sticky header. */
+    scroll-padding-top: 5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (width >= 64rem) {
+    body {
+      font-size: 1.125rem;
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--bf-focus);
+    outline-offset: 3px;
+  }
+
+  [tabindex='-1']:focus {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--bf-accent);
+    color: var(--bf-on-accent);
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Blueprint paper: fine 24px grid with a stronger line every 120px. */
+@utility bg-blueprint {
+  background-image:
+    linear-gradient(var(--bf-grid-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bf-grid-strong) 1px, transparent 1px),
+    linear-gradient(var(--bf-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bf-grid) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+  background-position: -1px -1px;
+}
+
+/* Safety-tape stripes for thin decorative bands. */
+@utility hazard-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--bf-accent) 0 12px,
+    var(--bf-inverse) 12px 24px
+  );
+}
+
+@utility label-caps {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/*
+ * Scroll reveal. Content is visible by default; the `js` class (set inline in
+ * <head>) opts in to the effect, and reduced-motion users never get it.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    translate: 0 12px;
+    transition:
+      opacity 400ms ease-out,
+      translate 400ms ease-out;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    translate: none;
+  }
+}
