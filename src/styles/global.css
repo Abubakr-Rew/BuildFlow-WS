@@ -11,6 +11,8 @@
   --font-*: initial;
   --font-sans: var(--font-golos);
   --font-display: var(--font-manrope);
+  /* 8-pt grid in px: when visitors enlarge text, the text grows and the spacing stays. */
+  --spacing: 4px;
 }
 
 @theme inline {
@@ -99,6 +101,8 @@
     font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.6;
+    /* Only breaks a word that cannot fit a line on its own (very large text settings). */
+    overflow-wrap: anywhere;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -115,6 +119,11 @@
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     text-wrap: balance;
+  }
+
+  a,
+  button {
+    touch-action: manipulation;
   }
 
   p,

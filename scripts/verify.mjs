@@ -13,7 +13,7 @@ const REPORTS = new URL('../reports/', import.meta.url);
 const SHOTS = new URL('screenshots/', REPORTS);
 const SECTION_SHOTS = new URL('sections/', SHOTS);
 const shot = (name, dir = SHOTS) => fileURLToPath(new URL(name, dir));
-const WIDTHS = [375, 768, 1440];
+const WIDTHS = [375, 768, 1024, 1440];
 const SCHEMES = ['light', 'dark'];
 const MIN_TARGET = 44;
 
@@ -23,6 +23,65 @@ const check = (ok, message) => (ok ? passes : failures).push(message);
 
 await mkdir(SECTION_SHOTS, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome' });
+
+/**
+ * WCAG contrast of every visible text element against its composited background.
+ * Runs in the page; colors go through a canvas so any CSS color syntax works.
+ */
+function findContrastIssues() {
+  const ctx = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext('2d', {
+    willReadFrequently: true,
+  });
+  const rgba = (color) => {
+    ctx.clearRect(0, 0, 1, 1);
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, 1, 1);
+    const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+    return { r, g, b, a: a / 255 };
+  };
+  const over = (top, bottom) => ({
+    r: top.r * top.a + bottom.r * (1 - top.a),
+    g: top.g * top.a + bottom.g * (1 - top.a),
+    b: top.b * top.a + bottom.b * (1 - top.a),
+    a: 1,
+  });
+  const backgroundOf = (el) => {
+    const layers = [];
+    for (let node = el; node; node = node.parentElement) {
+      const color = rgba(getComputedStyle(node).backgroundColor);
+      if (color.a > 0) layers.push(color);
+      if (color.a >= 1) break;
+    }
+    return layers.reverse().reduce((acc, layer) => over(layer, acc), { r: 255, g: 255, b: 255, a: 1 });
+  };
+  const luminance = ({ r, g, b }) => {
+    const channel = (v) => ((v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  };
+  const ratio = (x, y) => {
+    const [hi, lo] = [luminance(x), luminance(y)].sort((p, q) => q - p);
+    return (hi + 0.05) / (lo + 0.05);
+  };
+
+  const issues = [];
+  let checked = 0;
+  let lowest = Infinity;
+  for (const el of document.querySelectorAll('body *')) {
+    if (![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
+    const rect = el.getBoundingClientRect();
+    const style = getComputedStyle(el);
+    if (rect.width < 2 || rect.height < 2 || style.visibility === 'hidden' || el.closest('.sr-only')) continue;
+    const background = backgroundOf(el);
+    const value = ratio(over(rgba(style.color), background), background);
+    const size = parseFloat(style.fontSize);
+    const large = size >= 24 || (size >= 18.66 && parseInt(style.fontWeight, 10) >= 700);
+    const needed = large ? 3 : 4.5;
+    checked += 1;
+    lowest = Math.min(lowest, value);
+    if (value < needed) issues.push(`"${el.textContent.trim().slice(0, 30)}" ${value.toFixed(2)}:1 (needs ${needed}:1)`);
+  }
+  return { checked, lowest: Number(lowest.toFixed(2)), issues };
+}
 
 /** Opens the page and records console errors, page errors and failed requests. */
 async function openPage(contextOptions) {
@@ -112,6 +171,12 @@ for (const width of WIDTHS) {
       layout.tinyText.length === 0,
       `${tag}: no text under 12px` + (layout.tinyText.length ? `; ${layout.tinyText.join('; ')}` : ''),
     );
+    const contrast = await page.evaluate(findContrastIssues);
+    check(
+      contrast.issues.length === 0,
+      `${tag}: text contrast meets WCAG AA (${contrast.checked} text elements, lowest ${contrast.lowest}:1)` +
+        (contrast.issues.length ? `; ${contrast.issues.join('; ')}` : ''),
+    );
     const expectedBackground = scheme === 'dark' ? 'rgb(17, 18, 20)' : 'rgb(244, 244, 241)';
     check(layout.background === expectedBackground, `${tag}: ${scheme} theme applied (${layout.background})`);
     check(errors.length === 0, `${tag}: no console errors or failed requests` + (errors.length ? `; ${errors.join('; ')}` : ''));
@@ -127,14 +192,22 @@ for (const width of WIDTHS) {
   }
 }
 
-// 1b. Narrow Android phones: no horizontal scroll.
-for (const width of [320, 360]) {
-  const { context, page } = await openPage({ viewport: { width, height: 800 }, reducedMotion: 'reduce' });
+// 1b. Narrow Android phones, a phone in landscape, and text enlarged to 200%: no horizontal scroll.
+const extraLayouts = [
+  { name: '320px', viewport: { width: 320, height: 800 } },
+  { name: '360px', viewport: { width: 360, height: 800 } },
+  { name: 'landscape 812x375', viewport: { width: 812, height: 375 }, shot: 'landscape-812-light-fold.png' },
+  { name: '375px with 200% text', viewport: { width: 375, height: 800 }, css: 'html { font-size: 200% !important; }', shot: '375-light-text200-full.png', fullPage: true },
+];
+for (const layout of extraLayouts) {
+  const { context, page } = await openPage({ viewport: layout.viewport, reducedMotion: 'reduce' });
+  if (layout.css) await page.addStyleTag({ content: layout.css });
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
     clientWidth: document.documentElement.clientWidth,
   }));
-  check(scrollWidth <= clientWidth, `${width}px: no horizontal scroll (scrollWidth ${scrollWidth})`);
+  check(scrollWidth <= clientWidth, `${layout.name}: no horizontal scroll (scrollWidth ${scrollWidth}, viewport ${clientWidth})`);
+  if (layout.shot) await page.screenshot({ path: shot(layout.shot), fullPage: layout.fullPage ?? false });
   await context.close();
 }
 
@@ -236,6 +309,7 @@ for (const width of [375, 1440]) {
   // Walk every Tab stop from the top of the page.
   await page.reload();
   const unfocusable = [];
+  const obscured = [];
   let stops = 0;
   for (let i = 0; i < 60; i += 1) {
     await page.keyboard.press('Tab');
@@ -243,13 +317,23 @@ for (const width of [375, 1440]) {
       const el = document.activeElement;
       if (!el || el === document.body) return null;
       const style = getComputedStyle(el);
-      return { text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 30), outline: style.outlineStyle, width: parseFloat(style.outlineWidth) };
+      const header = document.querySelector('header').getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+      return {
+        text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 30),
+        outline: style.outlineStyle,
+        width: parseFloat(style.outlineWidth),
+        // WCAG 2.2 focus not obscured: the sticky header must not cover it.
+        hidden: !el.closest('header') && el.getAttribute('href') !== '#main' && rect.top < header.bottom - 1,
+      };
     });
     if (!state) break;
     stops += 1;
     if (state.outline === 'none' || state.width < 2) unfocusable.push(state.text);
+    if (state.hidden) obscured.push(state.text);
   }
   check(stops > 15 && unfocusable.length === 0, `visible focus ring on all ${stops} keyboard stops` + (unfocusable.length ? `; missing on: ${unfocusable.join(', ')}` : ''));
+  check(obscured.length === 0, `focused elements are never under the sticky header` + (obscured.length ? `; covered: ${obscured.join(', ')}` : ''));
   await context.close();
 }
 

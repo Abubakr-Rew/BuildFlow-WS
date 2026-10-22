@@ -54,7 +54,7 @@ const channels = [
             <li data-reveal style={`--reveal-delay: ${index * 80}ms`}>
               <a
                 href={channel.href}
-                class="group flex min-h-24 items-center gap-4 rounded-xl border-2 border-line bg-surface p-5 transition-colors duration-200 hover:border-accent"
+                class="group flex min-h-24 items-center gap-4 rounded-xl border-2 border-line bg-surface p-5 transition-colors duration-200 hover:border-accent active:border-accent active:bg-sunken"
                 {...(channel.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               >
                 <span class="grid size-12 shrink-0 place-items-center rounded-lg bg-accent text-on-accent">
