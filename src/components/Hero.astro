@@ -1,28 +1,64 @@
 ---
+import { getImage } from 'astro:assets';
 import ArrowDown from '@lucide/astro/icons/arrow-down';
 import MapPin from '@lucide/astro/icons/map-pin';
 import Smartphone from '@lucide/astro/icons/smartphone';
 import Button from './Button.astro';
 import PhoneMockup from './PhoneMockup.astro';
+import widePhoto from '../assets/hero/cranes-dusk-wide.jpg';
+import tallPhoto from '../assets/hero/cranes-dusk-tall.jpg';
 import { texts } from '../texts';
 
 const { hero } = texts;
 const factIcons = [MapPin, Smartphone];
+
+// Art direction: phones get the tall crop, wider screens the whole frame (see CREDITS.md).
+// <Picture> cannot switch crops per breakpoint, so the sources come from getImage().
+const WIDE = '(min-width: 40rem)';
+const WIDE_SIZES = '(min-width: 64rem) 100vw, 72rem';
+const wideWidths = [960, 1440, 1920, 2560];
+const tallWidths = [480, 720, 960];
+const [wideAvif, wideWebp, tallAvif, tallWebp, fallback] = await Promise.all([
+  getImage({ src: widePhoto, widths: wideWidths, format: 'avif', quality: 50 }),
+  getImage({ src: widePhoto, widths: wideWidths, format: 'webp', quality: 60 }),
+  getImage({ src: tallPhoto, widths: tallWidths, format: 'avif', quality: 50 }),
+  getImage({ src: tallPhoto, widths: tallWidths, format: 'webp', quality: 60 }),
+  getImage({ src: tallPhoto, width: 720, format: 'jpg', quality: 70 }),
+]);
 ---
 
-<section id="top" aria-labelledby="hero-title" class="relative overflow-hidden border-b border-line">
-  <div
-    class="bg-blueprint absolute inset-0 [mask-image:linear-gradient(to_bottom,black_40%,transparent)]"
-    aria-hidden="true"
-  >
-  </div>
+<section
+  id="top"
+  aria-labelledby="hero-title"
+  class="relative isolate overflow-hidden bg-night text-on-night [--bf-focus:var(--bf-accent)]"
+  data-photo
+>
+  <!-- Decorative background photo: the text carries the meaning, so alt is empty. -->
+  <picture>
+    <source media={WIDE} type="image/avif" srcset={wideAvif.srcSet.attribute} sizes={WIDE_SIZES} />
+    <source media={WIDE} type="image/webp" srcset={wideWebp.srcSet.attribute} sizes={WIDE_SIZES} />
+    <source type="image/avif" srcset={tallAvif.srcSet.attribute} sizes="100vw" />
+    <source type="image/webp" srcset={tallWebp.srcSet.attribute} sizes="100vw" />
+    <img
+      src={fallback.src}
+      width={fallback.attributes.width}
+      height={fallback.attributes.height}
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      class="absolute inset-x-0 top-0 -z-30 h-[46rem] w-full object-cover object-[50%_65%] lg:h-full"
+    />
+  </picture>
+  <div class="hero-shade absolute inset-x-0 top-0 -z-20 h-[46rem] lg:h-full" aria-hidden="true"></div>
+  <div class="bg-blueprint grid-on-night mask-fade-edges absolute inset-0 -z-10" aria-hidden="true"></div>
 
   <div
-    class="container-page relative grid grid-cols-1 items-center gap-12 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-16 lg:py-24"
+    class="container-page grid grid-cols-1 items-center gap-14 pt-10 pb-20 sm:pt-14 lg:min-h-[calc(100svh-4rem-7rem)] lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-16 lg:py-10 xl:gap-24"
   >
     <div>
       <p
-        class="inline-flex items-start gap-2.5 rounded-lg border border-line bg-surface px-3 py-2 text-sm leading-snug font-semibold"
+        class="inline-flex items-start gap-2.5 rounded-lg border border-night-line bg-night/70 px-3 py-2 text-sm leading-snug font-semibold backdrop-blur-sm"
       >
         <span class="mt-1.5 size-2 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
         {hero.badge}
@@ -30,28 +66,28 @@ const factIcons = [MapPin, Smartphone];
 
       <h1
         id="hero-title"
-        class="mt-6 text-[2.5rem] leading-[1.05] font-extrabold sm:text-6xl lg:text-[4rem]"
+        class="mt-6 text-[2.5rem] leading-[1.05] font-extrabold sm:text-6xl lg:text-[4rem] xl:text-[4.5rem]"
       >
-        {hero.titleStart} <span class="text-accent-ink">{hero.titleAccent}</span>
+        {hero.titleStart} <span class="text-accent">{hero.titleAccent}</span>
       </h1>
 
-      <p class="mt-6 max-w-xl text-lg text-muted sm:text-xl">{hero.lead}</p>
+      <p class="mt-6 max-w-xl text-lg text-on-night-muted sm:text-xl">{hero.lead}</p>
 
       <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Button href="#contact">{hero.primaryCta}</Button>
-        <Button href="#how" variant="secondary">
+        <Button href="#how" variant="secondary-inverse">
           {hero.secondaryCta}
           <ArrowDown class="size-5" />
         </Button>
       </div>
 
-      <ul class="mt-8 flex flex-col gap-2 text-base text-muted sm:flex-row sm:flex-wrap sm:gap-x-6">
+      <ul class="mt-8 flex flex-col gap-2 text-base text-on-night-muted sm:flex-row sm:flex-wrap sm:gap-x-6">
         {
           hero.facts.map((fact, index) => {
             const Icon = factIcons[index];
             return (
               <li class="flex items-center gap-2">
-                {Icon && <Icon class="size-5 shrink-0 text-accent-ink" />}
+                {Icon && <Icon class="size-5 shrink-0 text-accent" />}
                 {fact}
               </li>
             );
@@ -62,4 +98,6 @@ const factIcons = [MapPin, Smartphone];
 
     <PhoneMockup />
   </div>
+
+  <div class="hazard-stripes absolute inset-x-0 bottom-0 h-1.5" aria-hidden="true"></div>
 </section>

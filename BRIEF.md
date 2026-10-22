@@ -65,6 +65,7 @@ DESIGN
 - Construction-friendly, clean and modern, not a generic template. Deep graphite neutrals with a safety-orange accent, strong contrast (WCAG AA minimum), large readable text (16 px minimum body), generous spacing, 8-pt grid.
 - Cyrillic-friendly font, self-hosted via @fontsource (Manrope, Inter or Golos Text). No external font requests.
 - Simple CSS/SVG illustrations (blueprint grid, hard-hat/site motifs). No copyrighted images, real brand logos or stock photos of real people.
+- Update 2026-10-22: own or properly licensed construction photos (for example under the Pexels or Unsplash license) are allowed, as long as they show no identifiable people and no brands. Record source, author and license in CREDITS.md.
 - Light and dark mode via prefers-color-scheme.
 - Subtle scroll animations; disable them with prefers-reduced-motion.
 - Mobile-first, sticky header with the logo and a contact button. Tap targets at least 44 px.

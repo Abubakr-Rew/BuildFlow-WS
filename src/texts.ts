@@ -49,9 +49,13 @@ export const texts = typographAll({
     today: 'Сегодня',
     reports: [
       { author: 'Прораб', time: '18:40', text: 'Залили перекрытие второго этажа.', photos: '4 фото' },
-      { author: 'Прораб', time: '13:15', text: 'Завезли арматуру, начали вязку.', photos: '2 фото' },
+      { author: 'Прораб', time: '13:15', text: 'Начали кладку стен третьего этажа.', photos: '3 фото' },
     ],
     newReport: 'Новый отчёт',
+    // Floating cards around the phone: part of the same sample illustration.
+    toastTitle: 'Новый отчёт',
+    toastMeta: 'Объект «Пример» · 18:40',
+    upload: '4 фото загружено',
   },
   problem: {
     label: 'Проблема',

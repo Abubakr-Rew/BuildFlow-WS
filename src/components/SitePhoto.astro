@@ -1,12 +1,27 @@
 ---
 // Flat illustration standing in for a site photo inside the phone mockup.
-// "frame": concrete frame with a tower crane; "rebar": delivered rebar by the foundation.
+// "frame": concrete frame with a tower crane; "brick": a brick wall going up, racked back at the top.
 interface Props {
-  scene: 'frame' | 'rebar';
+  scene: 'frame' | 'brick';
   class?: string;
 }
 
 const { scene, class: className } = Astro.props;
+
+// Brick courses, bottom to top: 40x18 module with 3px mortar joints, every other course offset.
+const COURSE = 18;
+const MODULE = 40;
+const JOINT = 3;
+const courseEnds = [320, 320, 320, 320, 300, 260, 220];
+const courses = courseEnds.map((end, index) => {
+  const y = 150 - (index + 1) * COURSE;
+  const start = index % 2 ? -MODULE / 2 : 0;
+  const bricks = [];
+  for (let x = start; x < end; x += MODULE) {
+    bricks.push({ x: x + JOINT / 2, width: Math.min(MODULE, end - x) - JOINT });
+  }
+  return { y, end, bricks };
+});
 ---
 
 <svg class:list={['site-photo', className]} viewBox="0 0 320 180" aria-hidden="true" focusable="false">
@@ -40,18 +55,26 @@ const { scene, class: className } = Astro.props;
       </g>
     ) : (
       <g>
-        <rect x="40" y="132" width="200" height="16" fill="var(--concrete)" />
-        <g stroke="var(--rebar)" stroke-width="3" stroke-linecap="round">
-          <path d="M44 132V92M76 132V92M108 132V92M140 132V92M172 132V92M204 132V92M236 132V92" />
-        </g>
-        <g stroke="var(--concrete-dark)" stroke-width="2">
-          <path d="M44 102h192M44 116h192" />
-        </g>
-        <rect x="150" y="160" width="132" height="8" fill="var(--pallet)" />
-        <g stroke="var(--rebar)" stroke-width="3" stroke-linecap="round">
-          <path d="M146 154h140M150 148h132M154 142h124" />
-        </g>
-        <path d="M18 168l26-30 30 30z" fill="var(--gravel)" />
+        {courses.map((course) => (
+          <g>
+            <rect x="0" y={course.y} width={course.end} height={COURSE} fill="var(--mortar)" />
+            {course.bricks.map((brick) => (
+              <rect
+                x={brick.x}
+                y={course.y + JOINT / 2}
+                width={brick.width}
+                height={COURSE - JOINT}
+                rx="1"
+                fill="var(--brick)"
+              />
+            ))}
+          </g>
+        ))}
+        <rect x="116" y="17" width="88" height="7" rx="2" fill="var(--crane)" />
+        <rect x="154" y="18.5" width="12" height="4" rx="2" fill="var(--sky)" />
+        <rect y="150" width="320" height="8" fill="var(--plank)" />
+        <path d="M252 150l4-22h32l4 22z" fill="var(--concrete-dark)" />
+        <rect x="250" y="124" width="44" height="6" rx="2" fill="var(--concrete)" />
       </g>
     )
   }
@@ -66,8 +89,9 @@ const { scene, class: className } = Astro.props;
     --concrete-fresh: #b7bcc1;
     --concrete-dark: #6f757b;
     --rebar: #8a4b2a;
-    --pallet: #b08a5a;
-    --gravel: #a8a194;
+    --brick: #a5603f;
+    --mortar: #cfc8bb;
+    --plank: #b08a5a;
     --crane: var(--bf-accent);
     --cable: #4b4e54;
   }
@@ -81,8 +105,9 @@ const { scene, class: className } = Astro.props;
       --concrete-fresh: #858b92;
       --concrete-dark: #4f555c;
       --rebar: #b8693c;
-      --pallet: #7d6343;
-      --gravel: #5d5850;
+      --brick: #7e4a35;
+      --mortar: #4d4a44;
+      --plank: #7d6343;
       --cable: #a9acb2;
     }
   }

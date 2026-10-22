@@ -34,6 +34,10 @@
   --color-on-inverse: var(--bf-on-inverse);
   --color-on-inverse-muted: var(--bf-on-inverse-muted);
   --color-inverse-line: var(--bf-inverse-line);
+  --color-night: var(--bf-night);
+  --color-on-night: var(--bf-on-night);
+  --color-on-night-muted: var(--bf-on-night-muted);
+  --color-night-line: var(--bf-night-line);
 }
 
 @layer base {
@@ -55,16 +59,21 @@
     --bf-on-inverse: #f4f4f1;
     --bf-on-inverse-muted: #b4b6bb;
     --bf-inverse-line: #33353a;
-    --bf-grid: rgb(23 24 27 / 0.05);
-    --bf-grid-strong: rgb(23 24 27 / 0.09);
+    --bf-grid: rgb(23 24 27 / 0.07);
+    --bf-grid-strong: rgb(23 24 27 / 0.12);
     --bf-focus: #b43c0c;
+    /* Night: the photo hero, dark in both themes. */
+    --bf-night: #111214;
+    --bf-on-night: #f4f4f1;
+    --bf-on-night-muted: #c4c6cb;
+    --bf-night-line: rgb(244 244 241 / 0.18);
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
       --bf-bg: #111214;
-      --bf-surface: #1a1b1f;
-      --bf-sunken: #16171a;
+      --bf-surface: #202126;
+      --bf-sunken: #1a1b1f;
       --bf-fg: #f1f1ee;
       --bf-muted: #a9acb2;
       --bf-line: #2b2d32;
@@ -78,8 +87,8 @@
       --bf-on-inverse: #f1f1ee;
       --bf-on-inverse-muted: #b4b6bb;
       --bf-inverse-line: #34363c;
-      --bf-grid: rgb(241 241 238 / 0.035);
-      --bf-grid-strong: rgb(241 241 238 / 0.07);
+      --bf-grid: rgb(241 241 238 / 0.05);
+      --bf-grid-strong: rgb(241 241 238 / 0.09);
       --bf-focus: #fb923c;
     }
   }
@@ -178,6 +187,49 @@
   background-position: -1px -1px;
 }
 
+/* Light grid lines for the dark photo hero. */
+@utility grid-on-night {
+  --bf-grid: rgb(244 244 241 / 0.06);
+  --bf-grid-strong: rgb(244 244 241 / 0.11);
+}
+
+/* Fades a layer out toward its edges. */
+@utility mask-fade-edges {
+  mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 25%, transparent 100%);
+}
+
+/*
+ * Photo shade: keeps the hero text side dark (text contrast >= 4.5:1) and lets the
+ * photo show on the right. On narrower screens the photo sits behind the text only
+ * and fades into the night background below it.
+ */
+@utility hero-shade {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bf-night) 74%, transparent) 0%,
+    color-mix(in srgb, var(--bf-night) 80%, transparent) 55%,
+    var(--bf-night) 100%
+  );
+
+  @media (width >= 64rem) {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bf-night) 45%, transparent) 0%,
+        transparent 22%,
+        transparent 72%,
+        color-mix(in srgb, var(--bf-night) 85%, transparent) 100%
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--bf-night) 94%, transparent) 0%,
+        color-mix(in srgb, var(--bf-night) 86%, transparent) 40%,
+        color-mix(in srgb, var(--bf-night) 52%, transparent) 66%,
+        color-mix(in srgb, var(--bf-night) 30%, transparent) 100%
+      );
+  }
+}
+
 /* Safety-tape stripes for thin decorative bands. */
 @utility hazard-stripes {
   background-image: repeating-linear-gradient(
@@ -213,5 +265,21 @@
   .js [data-reveal].is-visible {
     opacity: 1;
     translate: none;
+  }
+
+  /* Slow drift for the floating sample cards in the hero (decorative). */
+  @keyframes float {
+    from {
+      translate: 0 0;
+    }
+
+    to {
+      translate: 0 -8px;
+    }
+  }
+
+  /* Starts after the page has settled, so loading metrics see a still first screen. */
+  .animate-float {
+    animation: float 5s ease-in-out 2s infinite alternate both;
   }
 }
