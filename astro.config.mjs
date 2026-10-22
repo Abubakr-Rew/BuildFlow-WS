@@ -9,8 +9,8 @@ if (todo.length > 0) {
   console.warn(`[buildflow] Placeholder values in src/site.config.ts: ${todo.join(', ')}`);
 }
 
-// siteUrl may include a path (GitHub Pages project site); it becomes the base.
-const { pathname } = new URL(siteConfig.siteUrl);
+// siteUrl may include a path (GitHub Pages project site): the origin becomes `site`, the path `base`.
+const { origin, pathname } = new URL(siteConfig.siteUrl);
 
 // Fonts come from the installed @fontsource-variable packages and are served by
 // this site. Only the Cyrillic and Latin subsets are used; the unicode ranges
@@ -27,8 +27,9 @@ const LATIN = [
 ];
 
 export default defineConfig({
-  site: siteConfig.siteUrl,
-  base: pathname,
+  site: origin,
+  // A trailing slash keeps the sitemap from listing the home page twice.
+  base: pathname.endsWith('/') ? pathname : `${pathname}/`,
   output: 'static',
   build: {
     // The whole stylesheet is small; inlining it removes a render-blocking request.
