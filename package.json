@@ -11,6 +11,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "verify": "node scripts/verify.mjs",
+    "lighthouse": "npx --yes lighthouse@13.5.0 http://localhost:4321/ --quiet --chrome-flags=--headless=new --output=json --output=html --output-path=reports/lighthouse/mobile",
     "astro": "astro"
   },
   "dependencies": {
