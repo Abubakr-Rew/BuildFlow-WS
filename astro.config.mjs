@@ -6,7 +6,7 @@ import { siteConfig, unfilledSettings } from './src/site.config.ts';
 
 const todo = unfilledSettings();
 if (todo.length > 0) {
-  console.warn(`[buildflow] Placeholder values in src/site.config.ts: ${todo.join(', ')}`);
+  console.warn(`[buildbetter] Placeholder values in src/site.config.ts: ${todo.join(', ')}`);
 }
 
 // siteUrl may include a path (GitHub Pages project site): the origin becomes `site`, the path `base`.

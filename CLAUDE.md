@@ -1,4 +1,4 @@
-# BuildFlow landing page
+# BuildBetter landing page
 
 Single-page site that recruits small Bishkek construction companies for a free 2-week pilot and people for 20–30 minute interviews. The full brief is in [BRIEF.md](BRIEF.md); read it before changing content or design.
 

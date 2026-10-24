@@ -6,10 +6,10 @@ import { typographAll } from './lib/typograph';
  */
 export const texts = typographAll({
   meta: {
-    title: 'BuildFlow — фото-отчёт с объекта за 2 минуты',
+    title: 'BuildBetter — фото-отчёт с объекта за 2 минуты',
     description:
       'Прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Ищем строительные компании в Бишкеке для бесплатного пилота.',
-    ogImageAlt: 'BuildFlow: знайте, что сделано на объекте, в тот же день',
+    ogImageAlt: 'BuildBetter: знайте, что сделано на объекте, в тот же день',
   },
   og: {
     badge: 'Проект в разработке',
@@ -17,7 +17,7 @@ export const texts = typographAll({
   },
   common: {
     skipLink: 'Перейти к содержанию',
-    homeLink: 'BuildFlow, в начало страницы',
+    homeLink: 'BuildBetter, в начало страницы',
     newTab: '(откроется в новой вкладке)',
     inTelegram: 'в Telegram',
     inWhatsapp: 'в WhatsApp',
@@ -33,7 +33,7 @@ export const texts = typographAll({
     badge: 'Проект в разработке. Ищем компании для бесплатного пилота',
     titleStart: 'Знайте, что сделано на объекте,',
     titleAccent: 'в тот же день',
-    lead: 'BuildFlow: прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Без лишних таблиц и чатов.',
+    lead: 'BuildBetter: прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Без лишних таблиц и чатов.',
     primaryCta: 'Хочу попробовать бесплатно',
     secondaryCta: 'Как это работает',
     facts: ['Для строительных компаний Бишкека', 'Приложение для Android и iOS'],
@@ -117,11 +117,11 @@ export const texts = typographAll({
   },
   about: {
     label: 'О проекте',
-    title: 'Кто делает BuildFlow',
+    title: 'Кто делает BuildBetter',
     text: 'Проект делает студент-программист из Бишкека. Мы только начинаем и хотим сделать инструмент, который действительно нужен на стройке.',
   },
   footer: {
-    nameNote: 'BuildFlow: рабочее название.',
+    nameNote: 'BuildBetter: рабочее название.',
     city: 'Бишкек',
     contactsLabel: 'Контакты',
   },
