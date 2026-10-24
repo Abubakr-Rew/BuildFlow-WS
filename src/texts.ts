@@ -6,7 +6,7 @@ import { typographAll } from './lib/typograph';
  */
 export const texts = typographAll({
   meta: {
-    title: 'BuildBetter — фото-отчёт с объекта за 2 минуты',
+    title: 'BuildBetter',
     description:
       'Прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Ищем строительные компании в Бишкеке для бесплатного пилота.',
     ogImageAlt: 'BuildBetter: знайте, что сделано на объекте, в тот же день',
