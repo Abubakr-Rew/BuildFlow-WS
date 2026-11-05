@@ -75,7 +75,7 @@ export async function renderOgImage(): Promise<Uint8Array<ArrayBuffer>> {
         'div',
         { display: 'flex', alignItems: 'center', gap: 20 },
         { type: 'img', props: { src: dataUri(markSvg(64)), width: 64, height: 64 } },
-        el('div', { fontFamily: MANROPE, fontSize: 44, fontWeight: 800 }, 'BuildBetter'),
+        el('div', { fontFamily: MANROPE, fontSize: 44, fontWeight: 800 }, 'BuildFlow'),
       ),
       el(
         'div',

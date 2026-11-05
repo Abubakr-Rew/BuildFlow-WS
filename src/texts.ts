@@ -6,10 +6,10 @@ import { typographAll } from './lib/typograph';
  */
 export const texts = typographAll({
   meta: {
-    title: 'BuildBetter',
+    title: 'BuildFlow',
     description:
       'Прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Ищем строительные компании в Бишкеке для бесплатного пилота.',
-    ogImageAlt: 'BuildBetter: знайте, что сделано на объекте, в тот же день',
+    ogImageAlt: 'BuildFlow: знайте, что сделано на объекте, в тот же день',
   },
   og: {
     badge: 'Проект в разработке',
@@ -17,7 +17,7 @@ export const texts = typographAll({
   },
   common: {
     skipLink: 'Перейти к содержанию',
-    homeLink: 'BuildBetter, в начало страницы',
+    homeLink: 'BuildFlow, в начало страницы',
     newTab: '(откроется в новой вкладке)',
     inTelegram: 'в Telegram',
     inWhatsapp: 'в WhatsApp',
@@ -33,7 +33,7 @@ export const texts = typographAll({
     badge: 'Проект в разработке. Ищем компании для бесплатного пилота',
     titleStart: 'Знайте, что сделано на объекте,',
     titleAccent: 'в тот же день',
-    lead: 'BuildBetter: прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Без лишних таблиц и чатов.',
+    lead: 'BuildFlow: прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Без лишних таблиц и чатов.',
     primaryCta: 'Хочу попробовать бесплатно',
     secondaryCta: 'Как это работает',
     facts: ['Для строительных компаний Бишкека', 'Приложение для Android и iOS'],
@@ -117,11 +117,11 @@ export const texts = typographAll({
   },
   about: {
     label: 'О проекте',
-    title: 'Кто делает BuildBetter',
+    title: 'Кто делает BuildFlow',
     text: 'Проект делает студент-программист из Бишкека. Мы только начинаем и хотим сделать инструмент, который действительно нужен на стройке.',
   },
   footer: {
-    nameNote: 'BuildBetter: рабочее название.',
+    nameNote: 'BuildFlow: рабочее название.',
     city: 'Бишкек',
     contactsLabel: 'Контакты',
   },

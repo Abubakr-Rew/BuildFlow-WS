@@ -8,7 +8,7 @@ export const brand = {
 } as const;
 
 /**
- * The BuildBetter mark, a hard hat on a tile, as SVG elements in a 32x32 viewBox.
+ * The BuildFlow mark, a hard hat on a tile, as SVG elements in a 32x32 viewBox.
  * Used by the header logo (with theme colors) and by the favicons.
  */
 export function markShapes(tile: string, hat: string, radius = 7): string {

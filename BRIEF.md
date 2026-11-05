@@ -1,8 +1,8 @@
-# BuildBetter landing page: brief
+# BuildFlow landing page: brief
 
 - Use the ui-ux-pro-max:ui-ux-pro-max skill for all design decisions (style, colors, typography, layout, UX checks).
 
-Build a single-page informational website (landing page) for the project "BuildBetter".
+Build a single-page informational website (landing page) for the project "BuildFlow".
 
 HOW TO WORK
 - First save this whole message as BRIEF.md in the project root, so it can be reused in future sessions.
@@ -13,7 +13,7 @@ HOW TO WORK
 - Use the ui-ux-pro-max skill for all design decisions (style, colors, typography, layout, UX checks).
 
 PROJECT FACTS (use only these, do not invent anything)
-- BuildBetter is a mobile app (Android and iOS) for small construction companies in Bishkek, Kyrgyzstan. The name is temporary.
+- BuildFlow is a mobile app (Android and iOS) for small construction companies in Bishkek, Kyrgyzstan. The name is temporary.
 - A foreman (прораб) sends a daily photo report from the site in under 2 minutes. The company owner sees what was actually done today in a feed per site.
 - The product is in development, in the stage of testing the idea. There are NO customers, NO reviews, NO statistics, NO case studies and NO app-store links yet. Never fabricate any of these (no fake testimonials, numbers, logos, "trusted by", download buttons or ratings).
 - Goal of the site: find construction companies for a free 2-week pilot on one site, and people willing to give a 20-30 minute interview.
@@ -25,7 +25,7 @@ Owners and managers of small and medium construction companies, and foremen, in 
 PAGE STRUCTURE AND COPY (Russian, use as written, you may polish wording slightly)
 1. Hero
    - Headline: "Знайте, что сделано на объекте, в тот же день"
-   - Subline: "BuildBetter: прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Без лишних таблиц и чатов."
+   - Subline: "BuildFlow: прораб отправляет фото-отчёт за 2 минуты, владелец видит ленту по каждому объекту. Без лишних таблиц и чатов."
    - Buttons: "Хочу попробовать бесплатно" (scrolls to contact), "Как это работает" (scrolls to How it works).
    - Badge: "Проект в разработке. Ищем компании для бесплатного пилота".
    - Next to the text: a CSS/SVG phone mockup with a sample report feed (clearly fake placeholder data), labeled "Пример интерфейса".
@@ -52,14 +52,14 @@ PAGE STRUCTURE AND COPY (Russian, use as written, you may polish wording slightl
 7. Contact
    - Telegram, WhatsApp and email links. No backend and no form that stores personal data: contact is via these links only.
    - WhatsApp and Telegram links support a prefilled message:
-     pilot: "Здравствуйте! Хочу бесплатный пилот BuildBetter."
-     interview: "Здравствуйте! Готов поговорить о BuildBetter."
+     pilot: "Здравствуйте! Хочу бесплатный пилот BuildFlow."
+     interview: "Здравствуйте! Готов поговорить о BuildFlow."
    - All values come from the config file.
 8. About
    - "Проект делает студент-программист из Бишкека. Мы только начинаем и хотим сделать инструмент, который действительно нужен на стройке."
    - Name and photo are optional: leave a TODO in the config; if empty, show nothing in their place.
 9. Footer
-   - Copyright with the current year (computed at build time), note "BuildBetter: рабочее название", city Bishkek. No fake legal entity.
+   - Copyright with the current year (computed at build time), note "BuildFlow: рабочее название", city Bishkek. No fake legal entity.
 
 DESIGN
 - Construction-friendly, clean and modern, not a generic template. Deep graphite neutrals with a safety-orange accent, strong contrast (WCAG AA minimum), large readable text (16 px minimum body), generous spacing, 8-pt grid.

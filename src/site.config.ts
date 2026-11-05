@@ -26,14 +26,14 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  siteName: 'BuildBetter',
+  siteName: 'BuildFlow',
   siteUrl: 'https://example.com', // TODO: real site address after deploying
-  telegramUsername: 'buildbetter_todo', // TODO: real Telegram username
+  telegramUsername: 'buildflow_todo', // TODO: real Telegram username
   whatsappNumber: '996000000000', // TODO: real WhatsApp number
   email: 'todo@example.com', // TODO: real contact email
   messages: {
-    pilot: 'Здравствуйте! Хочу бесплатный пилот BuildBetter.',
-    interview: 'Здравствуйте! Готов поговорить о BuildBetter.',
+    pilot: 'Здравствуйте! Хочу бесплатный пилот BuildFlow.',
+    interview: 'Здравствуйте! Готов поговорить о BuildFlow.',
   },
   author: {
     name: '', // TODO: optional author name
